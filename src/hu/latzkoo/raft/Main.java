@@ -1,8 +1,9 @@
 package hu.latzkoo.raft;
 
-import com.apple.eawt.Application;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -11,14 +12,14 @@ import java.io.IOException;
 public class Main {
 
     public static JFrame app;
-    public static final double VERSION = 1.0;
+    public static final String VERSION = "1.0.1";
 
     public static void main(String[] args) {
         init();
     }
 
     public static void init() {
-        Main.app = new JFrame("Raft v" + VERSION);
+        Main.app = new JFrame("Raft " + VERSION);
         Main.app.setLayout(new BorderLayout());
         Main.app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -35,15 +36,44 @@ public class Main {
      * Menü beállítása
      */
     private static void setMenus() {
+        MenuListener menuListener = new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                if (Game.getStatus().equals("running")) {
+                    Game.pauseGame();
+                }
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+                if (Game.getStatus().equals("paused")) {
+                    Game.continueGame();
+                }
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+                if (Game.getStatus().equals("paused")) {
+                    Game.continueGame();
+                }
+            }
+        };
+
         JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("Fájl");
+        fileMenu.addMenuListener(menuListener);
+
         JMenuItem newGame = new JMenuItem("Új játék");
         newGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
         newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.create();
+                Game game = create();
+
+                if (Game.getStatus().equals("stopped")) {
+                    game.start();
+                }
             }
         });
 
@@ -61,6 +91,8 @@ public class Main {
         fileMenu.add(exit);
 
         JMenu helpMenu = new JMenu("Súgó");
+        helpMenu.addMenuListener(menuListener);
+
         JMenuItem help = new JMenuItem("Súgó");
         help.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         help.addActionListener(new ActionListener() {
@@ -174,7 +206,6 @@ public class Main {
         try {
             BufferedImage image = ImageIO.read(Main.class.getClassLoader().getResourceAsStream("icon.png"));
             Main.app.setIconImage(image);
-            Application.getApplication().setDockIconImage(image);
         }
         catch (IOException e) {
             e.printStackTrace();

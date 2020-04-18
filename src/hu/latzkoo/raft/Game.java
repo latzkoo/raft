@@ -220,12 +220,16 @@ public class Game extends JFrame {
             case 40:
             case 98:
                 return "moveDown";
+            case 36:
             case 103:
                 return "moveUpLeft";
+            case 33:
             case 105:
                 return "moveUpRight";
+            case 35:
             case 97:
                 return "moveDownLeft";
+            case 34:
             case 99:
                 return "moveDownRight";
             case 32:
@@ -372,8 +376,8 @@ public class Game extends JFrame {
             shark.move();
             getCanvas().doFlow();
         }
-        catch (Exception e) {
-            System.err.println(e.getMessage());
+        catch (Exception exception) {
+            System.err.println(exception.getMessage());
         }
     }
 

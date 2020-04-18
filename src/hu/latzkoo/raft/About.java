@@ -36,7 +36,7 @@ public class About extends JDialog {
         JLabel textField = new JLabel();
         textField.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        textField.setText("<html><h2>Raft v" + Main.VERSION + "</h2>" +
+        textField.setText("<html><h2>Raft " + Main.VERSION + "</h2>" +
                 "<strong>Készítette:</strong> Timári László<br />" +
                 "<strong>Neptun azonosító:</strong> FA4ZPW<br />" +
                 "<strong>A grafikai elemeket készítette:</strong> Buda Villő<br /><br />" +
